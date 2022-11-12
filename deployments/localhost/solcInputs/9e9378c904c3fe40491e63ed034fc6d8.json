@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/Escrow.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.8;\n\ncontract Escrow {\n    address public lawyer;\n    address public payeer;\n    address payable payee;\n    uint256 public amount;\n\n    constructor(\n        address _payeer,\n        address payable _payee,\n        uint256 _amount\n    ) {\n        payeer = _payeer;\n        payee = _payee;\n        amount = _amount;\n        lawyer = msg.sender;\n    }\n\n    function deposit() public payable {\n        require(msg.sender == payeer, \"sender must be the payeer\");\n        require(address(this).balance <= amount);\n    }\n\n    function release() public {\n        require(\n            address(this).balance == amount,\n            \"cannot release fund before full amount is sent\"\n        );\n        require(msg.sender == lawyer, \"only lawyer can release funds\");\n        payee.transfer(amount);\n    }\n\n    function balanceOf() public view returns (uint256) {\n        return address(this).balance;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
